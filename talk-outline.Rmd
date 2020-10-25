@@ -1,0 +1,70 @@
+---
+title: "talk-outline"
+author: "josiah parry"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# APIs: you're probably not using them and why you probably should
+
+**Abstract**:
+
+> If you venture even momentarily into the world of DevOps you'll quickly hear the phrases like continuous integration and delivery (CI/CD), microservice, build automation and a whole slew more. This talk will focus on microservices aka APIs. APIs are an immensely powerful tool for building, managing, and sharing applications. I will emphasize the ability to share code regardless of language, maintainability, modularity, and empowerment of the data scientist.
+
+## Outline:
+
+### Introduction
+
+-   Myself in 60 seconds:
+    -   Customer Success at RStudio, PBC in the Government Vertical
+    -   MS from Northeastern University (Boston, MA) in Urban Informatics
+        -   Fancy way of saying studying cities using administrative and open data
+    -   BA in Sociology & Math Minor Plymouth State University in NH
+    -   In short I've spent the last 6-7 years with a data driven focus on how individuals interact with the state which has led me down this path focused on government
+-   Data science is quickly becoming part of production applications and is encompassing more than just one off ad hoc reports. Data scientists need to be equipped with the tools to make their way into production without excessive assistance from DevOps (development operations) and IT teams. Devops is focused on agile software development (quick iterations and adjustments) and content delivery. In order for data science teams to become exceptionally successful they'll need to at least have a working undertanding of devops concepts and an applied knowledge of content delivery. To this end, I will focus on microservices.
+- First, lets define what a microservice is. 
+
+###  Introduce Microservices & APIs
+
+  -   Microservices references the microservice architecture. This is a software design paradigm that breaks up applications into smaller, independent, and deployable services (https://martinfowler.com/articles/microservices.html)
+  -   APIs are a software framework which can be interacted with and communicated with
+  -   APIs can be
+    
+###  signs you might want to be using an API
+
+  -   monolithic massive applications and reports
+  -   redundant code (copying and pasting the same scripts)
+  -   people from other teams want to use your tools
+  -   people don't know your software language and cannot translate the code
+    
+(120) seconds
+
+###  What are the benefits?
+
+  -   Organizational:
+      -   Manage one component at a time
+  -   Reduce technical debt:
+      -   Components can be reused
+  -   Engage other toolchains
+      -   "each microservice can be written using a different technology."
+  -   cross functional teams
+      -   " Microservices grant the developers more independence to work autonomously and make technical decisions quickly in smaller groups"
+          -   <https://skelia.com/articles/5-major-benefits-microservice-architecture/>
+            
+(45 seconds)
+- How do you make an API
+  - R: python
+  - Python: Flask, FastAPI
+- How do you deploy an API?
+  - RStudio Connect
+  - Digital Ocean
+  - Docker
+- If you
+
+### Resources:
+
+-   [https://nordicapis.com/what-is-the-difference-between-apis-and-microservices/](https://nordicapis.com/what-is-the-difference-between-apis-and-microservices/#){.uri}
