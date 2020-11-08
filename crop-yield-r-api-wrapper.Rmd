@@ -1,0 +1,113 @@
+---
+title: "Crop Yield - R Plumber API Wrapper"
+author: "Josiah Parry"
+date: "11/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+library(dplyr)
+```
+
+## Querying an API
+
+
+We use the `{httr}` library for interacting with HTTP requests from R. 
+
+Generate the API endpoint query URL.
+
+```{r}
+library(httr)
+
+# Query API w/out function ------------------------------------------------
+
+query_url <- modify_url(
+  url = "https://colorado.rstudio.com/rsc/crop-yield-api/crop-yield",
+  # these are the parameters that are sent to the API end point 
+  # this will become function arguments 
+  query = list(.year = 1999, .product = "maize", .entity = "united states")
+)
+
+query_url
+```
+
+Send the query to the API using the correct _method_. In this case, `httr::GET()`.  
+
+```{r}
+# we want to send the query
+res <- GET(query_url)
+
+res
+```
+We see we've got a status code of 200 which is ideal! Now we need to extract the contents of the API query result. Use `httr::content()` to get the results from the API. We specify the argument `as = "text"` so we can get back the raw JSON that the API sent us. Otherwise, httr will guess and parse the result for us making a list object. I'd rather we parse it ourselves into a data.frame! We are also specifying the text encoding to prevent httr from making an educated guess. Being more specific is better.
+
+```{r}
+# parse the query response as text so we get the raw json
+res_json <- content(res, as = "text", encoding = "UTF-8")
+
+cat(res_json)
+```
+
+Notice that we have JSON now. We can use the fabulous `jsonlite` package to parse a character string which contains JSON. This will read the results into a dataframe. 
+
+```{r}
+# read the json into a data frame 
+jsonlite::fromJSON(res_json)
+```
+
+## Making a wrapper
+
+The above was good, but it's not easily repeatable for multiple queries. To make life easier, we will bundle all of the above code up into a single function. 
+
+
+```{r}
+# Create plumber API wrapper  ---------------------------------------------
+
+
+get_crop_yields <- function(.year, .product, .entity) {
+  
+  query_url <- modify_url(
+    url = "https://colorado.rstudio.com/rsc/crop-yield-api/crop-yield",
+  
+      # Function arguments are passed into the `query` argument to fill out the parameters
+    # key-value pairs. 
+    
+    query = list(.year = .year, .product = .product, .entity = .entity)
+  )
+  
+  res <- GET(query_url)
+  
+  res_json <- content(res, as = "text", encoding = "UTF-8")
+  
+  jsonlite::fromJSON(res_json)
+  
+}
+```
+
+Use our newly defined function. 
+
+```{r}
+get_crop_yields(2012, "beans", "mexico")
+```
+
+This function is extremely useful because now we can iterate over multiple values! 
+
+```{r}
+to_query <- expand.grid(.year = 2010:2012,
+            .product = c("beans", "maize"),
+            .entity = "united states")
+
+results <- purrr::pmap_dfr(to_query, get_crop_yields)
+
+results
+```
+
+```{r warning=FALSE, message=FALSE}
+library(ggplot2)
+
+ggplot(results, aes(year, crop_yield)) +
+  geom_col(position = "dodge", size = 0.8) +
+  facet_wrap("product", scales = "free")
+```
+
